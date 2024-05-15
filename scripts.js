@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function fetchNews() {
-    const apiKey = 'YOUR_NEWS_API_KEY';
+    const apiKey = '99f57d700b7b4071aa86f902d59649a2';
     fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`)
         .then(response => response.json())
         .then(data => {
@@ -25,7 +25,7 @@ function fetchNews() {
 }
 
 function fetchFinanceUpdates() {
-    const apiKey = 'YOUR_ALPHA_VANTAGE_API_KEY';
+    const apiKey = '74ON6F11ZYZCRWND';
     fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=${apiKey}`)
         .then(response => response.json())
         .then(data => {
@@ -38,7 +38,7 @@ function fetchFinanceUpdates() {
 }
 
 function fetchMarketPrices() {
-    const alphaVantageApiKey = 'YOUR_ALPHA_VANTAGE_API_KEY';
+    const alphaVantageApiKey = '74ON6F11ZYZCRWND';
     const sp500Symbol = 'SPX';
     const dowSymbol = 'DJIA';
     const nasdaqSymbol = 'IXIC';
