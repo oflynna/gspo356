@@ -5,13 +5,19 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function fetchNews() {
-    fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=YOUR_NEWS_API_KEY')
+    const apiKey = 'YOUR_NEWS_API_KEY';
+    fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`)
         .then(response => response.json())
         .then(data => {
             const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = '';
             data.articles.forEach(article => {
                 const newsItem = document.createElement('div');
-                newsItem.innerHTML = `<h3>${article.title}</h3><p>${article.description}</p><a href="${article.url}" target="_blank">Read more</a>`;
+                newsItem.innerHTML = `
+                    <h3>${article.title}</h3>
+                    <p>${article.description || ''}</p>
+                    <a href="${article.url}" target="_blank">Read more</a>
+                `;
                 newsContainer.appendChild(newsItem);
             });
         })
@@ -19,26 +25,56 @@ function fetchNews() {
 }
 
 function fetchFinanceUpdates() {
-    // Placeholder: Replace with actual API call to fetch finance updates
-    const financeContainer = document.getElementById('finance-container');
-    financeContainer.innerHTML = '<p>Finance update content goes here...</p>';
+    const apiKey = 'YOUR_ALPHA_VANTAGE_API_KEY';
+    fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            const financeContainer = document.getElementById('finance-container');
+            financeContainer.innerHTML = `
+                <p>IBM Stock Price: $${data['Global Quote']['05. price']}</p>
+            `;
+        })
+        .catch(error => console.error('Error fetching finance updates:', error));
 }
 
 function fetchMarketPrices() {
-    // Placeholder: Replace with actual API call to fetch market prices
-    const marketsContainer = document.getElementById('markets-container');
-    marketsContainer.innerHTML = `
-        <p>S&P 500: <span id="sp500-price">Loading...</span></p>
-        <p>Dow Jones: <span id="dow-price">Loading...</span></p>
-        <p>NASDAQ: <span id="nasdaq-price">Loading...</span></p>
-        <p>Bitcoin: <span id="btc-price">Loading...</span></p>
-    `;
+    const alphaVantageApiKey = 'YOUR_ALPHA_VANTAGE_API_KEY';
+    const sp500Symbol = 'SPX';
+    const dowSymbol = 'DJIA';
+    const nasdaqSymbol = 'IXIC';
 
-    // Example: Fetch Bitcoin price from CoinGecko
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
+    const coinGeckoApiUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd';
+
+    // Fetch S&P 500 price
+    fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sp500Symbol}&apikey=${alphaVantageApiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('sp500-price').textContent = `$${data['Global Quote']['05. price']}`;
+        })
+        .catch(error => console.error('Error fetching S&P 500 price:', error));
+
+    // Fetch Dow Jones price
+    fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${dowSymbol}&apikey=${alphaVantageApiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('dow-price').textContent = `$${data['Global Quote']['05. price']}`;
+        })
+        .catch(error => console.error('Error fetching Dow Jones price:', error));
+
+    // Fetch Nasdaq price
+    fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${nasdaqSymbol}&apikey=${alphaVantageApiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('nasdaq-price').textContent = `$${data['Global Quote']['05. price']}`;
+        })
+        .catch(error => console.error('Error fetching Nasdaq price:', error));
+
+    // Fetch cryptocurrency prices
+    fetch(coinGeckoApiUrl)
         .then(response => response.json())
         .then(data => {
             document.getElementById('btc-price').textContent = `$${data.bitcoin.usd}`;
+            document.getElementById('eth-price').textContent = `$${data.ethereum.usd}`;
         })
-        .catch(error => console.error('Error fetching Bitcoin price:', error));
+        .catch(error => console.error('Error fetching cryptocurrency prices:', error));
 }
